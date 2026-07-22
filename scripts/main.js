@@ -151,38 +151,39 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 })();
 
 /* ==========================================================================
-   3D tilt on project cards
+   3D tilt on project cards — exposed as a function so cards rendered later
+   (e.g. from the backend fetch below) can get the same effect
    ========================================================================== */
-(function tiltCards() {
+function attachTilt(card) {
   if (!isFinePointer || reduceMotion) return;
 
-  document.querySelectorAll('.tilt-card').forEach(function (card) {
-    function onMove(e) {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const rotateX = ((y / rect.height) - 0.5) * -10;
-      const rotateY = ((x / rect.width) - 0.5) * 10;
+  function onMove(e) {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotateX = ((y / rect.height) - 0.5) * -10;
+    const rotateY = ((x / rect.width) - 0.5) * 10;
 
-      if (typeof gsap !== 'undefined') {
-        gsap.to(card, { rotateX: rotateX, rotateY: rotateY, y: -8, duration: 0.4, ease: 'power2.out' });
-      } else {
-        card.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-8px)';
-      }
+    if (typeof gsap !== 'undefined') {
+      gsap.to(card, { rotateX: rotateX, rotateY: rotateY, y: -8, duration: 0.4, ease: 'power2.out' });
+    } else {
+      card.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-8px)';
     }
+  }
 
-    function onLeave() {
-      if (typeof gsap !== 'undefined') {
-        gsap.to(card, { rotateX: 0, rotateY: 0, y: 0, duration: 0.5, ease: 'power2.out' });
-      } else {
-        card.style.transform = '';
-      }
+  function onLeave() {
+    if (typeof gsap !== 'undefined') {
+      gsap.to(card, { rotateX: 0, rotateY: 0, y: 0, duration: 0.5, ease: 'power2.out' });
+    } else {
+      card.style.transform = '';
     }
+  }
 
-    card.addEventListener('mousemove', onMove);
-    card.addEventListener('mouseleave', onLeave);
-  });
-})();
+  card.addEventListener('mousemove', onMove);
+  card.addEventListener('mouseleave', onLeave);
+}
+
+document.querySelectorAll('.tilt-card').forEach(attachTilt);
 
 /* ==========================================================================
    GSAP scroll/entrance animations
@@ -314,12 +315,20 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
     const submission = {
       name: nameInput.value.trim(),
       email: emailInput.value.trim(),
-      message: messageInput.value.trim(),
-      sentAt: new Date().toISOString()
+      message: messageInput.value.trim()
     };
 
-    // No backend wired up yet — log locally and show confirmation.
-    console.log('Contact form submission:', submission);
+    // Try sending it to the local backend (see main.py). If it's not
+    // running — e.g. for a real visitor on the live site — this fails
+    // quietly and the form still confirms locally, so nothing breaks.
+    fetch(API_BASE + '/api/feedback/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(submission)
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) { console.log('Feedback sent to backend:', data); })
+      .catch(function () { console.log('Backend not reachable — feedback was not sent to the server.'); });
 
     successBox.classList.add('visible');
     form.reset();
@@ -328,4 +337,68 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
       successBox.classList.remove('visible');
     }, 4000);
   });
+})();
+
+/* ==========================================================================
+   Backend integration — optional. If a local FastAPI server (main.py) is
+   running at API_BASE, the project cards are loaded live from it. If it's
+   not running (e.g. a real visitor on the deployed site), this fails
+   quietly and the static project cards already in the HTML stay as-is.
+   ========================================================================== */
+const API_BASE = 'http://localhost:8000';
+
+(function loadProjectsFromBackend() {
+  const grid = document.querySelector('.project-grid');
+  if (!grid) return;
+
+  fetch(API_BASE + '/api/projects')
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      const projects = data.projects || [];
+      if (!projects.length) return;
+
+      grid.innerHTML = '';
+
+      projects.forEach(function (project) {
+        const card = document.createElement('article');
+        card.className = 'project-card tilt-card';
+        card.innerHTML =
+          '<div class="project-card-top">' +
+            '<span class="project-icon">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+              'stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/>' +
+              '<path d="M9 12l2 2 4-4"/></svg>' +
+            '</span>' +
+            '<h3></h3>' +
+          '</div>' +
+          '<p></p>' +
+          '<div class="project-tags"></div>' +
+          '<a target="_blank" rel="noopener noreferrer" class="project-link">' +
+            'View Repo <span class="arrow" aria-hidden="true">→</span>' +
+          '</a>';
+
+        card.querySelector('h3').textContent = project.name;
+        card.querySelector('p').textContent = project.description || '';
+        card.querySelector('.project-link').href = project.repo_url || '#';
+
+        const tagsEl = card.querySelector('.project-tags');
+        (project.tags || []).forEach(function (tag) {
+          const tagSpan = document.createElement('span');
+          tagSpan.textContent = tag;
+          tagsEl.appendChild(tagSpan);
+        });
+
+        grid.appendChild(card);
+        attachTilt(card);
+      });
+
+      if (typeof gsap !== 'undefined' && !reduceMotion) {
+        gsap.from('.project-card', { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' });
+      }
+
+      console.log('Projects loaded live from the backend API.');
+    })
+    .catch(function () {
+      console.log('Backend not reachable — showing the built-in project list instead.');
+    });
 })();

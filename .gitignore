@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Separate, independent repo — not part of this project
+PERSONAL PROJECTS API/

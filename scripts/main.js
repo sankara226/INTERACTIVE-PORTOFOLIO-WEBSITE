@@ -192,22 +192,10 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Split hero title lines into per-character spans for a staggered reveal
-  document.querySelectorAll('[data-split]').forEach(function (line) {
-    const text = line.textContent;
-    line.textContent = '';
-    text.split('').forEach(function (char) {
-      const span = document.createElement('span');
-      span.className = 'char';
-      span.textContent = char === ' ' ? ' ' : char;
-      line.appendChild(span);
-    });
-  });
-
   const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
   heroTl
     .from('[data-anim="eyebrow"]', { y: 24, opacity: 0, duration: 0.6 })
-    .from('.hero-title .char', { y: 60, opacity: 0, duration: 0.7, stagger: 0.02 }, '-=0.3')
+    .from('.hero-title .line', { y: 40, opacity: 0, duration: 0.7, stagger: 0.12 }, '-=0.3')
     .from('[data-anim="subtitle"]', { y: 24, opacity: 0, duration: 0.7 }, '-=0.4')
     .from('[data-anim="cta"]', { y: 24, opacity: 0, duration: 0.7 }, '-=0.45')
     .from('.orb', { scale: 0.6, opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power2.out' }, 0);
@@ -217,7 +205,8 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
   gsap.to('.orb-2', { y: -25, x: -15, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
   gsap.to('.orb-3', { y: 20, x: -20, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
-  // Generic scroll reveal for anything with .reveal
+  // Generic scroll reveal for anything with .reveal (excludes project cards —
+  // those get their own grouped stagger below, avoiding double-animation)
   document.querySelectorAll('.reveal').forEach(function (el, i) {
     gsap.from(el, {
       y: 40,
@@ -233,7 +222,7 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
     });
   });
 
-  // Project cards stagger as a group
+  // Project cards stagger as a group, in DOM order
   gsap.from('.project-card', {
     y: 60,
     opacity: 0,
@@ -244,6 +233,22 @@ const isFinePointer = window.matchMedia('(pointer: fine)').matches;
       trigger: '.project-grid',
       start: 'top 80%'
     }
+  });
+
+  // Stat counters
+  document.querySelectorAll('.stat-num').forEach(function (el) {
+    const target = Number(el.getAttribute('data-count-to')) || 0;
+    const counter = { val: 0 };
+    gsap.to(counter, {
+      val: target,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: function () { el.textContent = Math.round(counter.val); },
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 90%'
+      }
+    });
   });
 })();
 

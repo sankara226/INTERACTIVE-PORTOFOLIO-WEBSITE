@@ -384,13 +384,9 @@ img {
 
 .hero-title .line {
   display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-}
-
-.hero-title .char {
-  display: inline-block;
-  will-change: transform, opacity;
+  overflow: visible;
+  line-height: 1.25;
+  padding-bottom: 0.06em;
 }
 
 .hero-subtitle {
@@ -525,8 +521,19 @@ img {
 }
 
 .about-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   font-size: 1.08rem;
   color: var(--text-muted);
+}
+
+.about-quote {
+  border-left: 3px solid var(--accent);
+  padding-left: 18px;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--text);
 }
 
 .about-highlights {
@@ -555,6 +562,38 @@ img {
   font-weight: 800;
   font-size: 1.1rem;
   color: var(--accent-2);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.stat {
+  text-align: center;
+  padding: 24px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.stat-num {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 /* Projects */
@@ -833,6 +872,12 @@ img {
 @media (max-width: 860px) {
   .about-grid,
   .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .stats-row {
     grid-template-columns: 1fr;
   }
 }

@@ -138,78 +138,47 @@
     <!-- Projects -->
     <section class="section section-alt section-tight" id="projects">
       <div class="section-inner">
-        <p class="section-tag reveal">Week 1 – 2</p>
-        <h2 class="section-title reveal">Projects</h2>
-        <div class="project-grid">
+        <div class="section-heading-row reveal">
+          <div>
+            <p class="section-tag">Live from GitHub</p>
+            <h2 class="section-title">Projects</h2>
+          </div>
+          <button class="admin-toggle" id="adminToggle" type="button">Manage</button>
+        </div>
+        <p class="data-source-note" id="dataSourceNote">Loading live project data…</p>
 
-          <article class="project-card tilt-card">
-            <div class="project-card-top">
-              <span class="project-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a4.5 4.5 0 0 0-4.4 5.4A4 4 0 0 0 4 15a4.5 4.5 0 0 0 4.5 4.5h.1"/><path d="M14.5 2a4.5 4.5 0 0 1 4.4 5.4A4 4 0 0 1 20 15a4.5 4.5 0 0 1-4.5 4.5h-.1"/><path d="M9.5 2c1.5 1 1.5 3 1.5 4.5v11c0 1.5-.5 2.5-1.5 3M14.5 2c-1.5 1-1.5 3-1.5 4.5v11c0 1.5.5 2.5 1.5 3"/></svg>
-              </span>
-              <h3>Hallucination Detector Guide</h3>
-            </div>
-            <p>Learned about AI hallucinations and how to detect them. Built a comprehensive guide with
-              real examples of failure modes and how to catch them before they ship.</p>
-            <div class="project-tags">
-              <span>Claude</span><span>Prompt Engineering</span><span>AI Safety</span>
-            </div>
-            <a href="https://github.com/sankara226/CLAUDE-CODE-STARTER-KIT" target="_blank" rel="noopener noreferrer" class="project-link">
-              View Repo <span class="arrow" aria-hidden="true">→</span>
-            </a>
-          </article>
+        <div class="admin-panel" id="adminPanel" hidden>
+          <div class="admin-key-row" id="adminKeyRow">
+            <label for="adminKeyInput" class="sr-only">Admin API key</label>
+            <input type="password" id="adminKeyInput" placeholder="Admin API key" autocomplete="off">
+            <button type="button" class="btn btn-ghost" id="adminUnlockBtn">Unlock</button>
+            <span class="admin-key-status" id="adminKeyStatus"></span>
+          </div>
 
-          <article class="project-card tilt-card">
-            <div class="project-card-top">
-              <span class="project-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              </span>
-              <h3>Prompt Library</h3>
+          <form class="admin-project-form" id="addProjectForm" hidden>
+            <div class="form-group">
+              <label for="newProjectName">Name</label>
+              <input type="text" id="newProjectName" placeholder="MY-NEW-PROJECT" required>
             </div>
-            <p>Created a collection of reusable prompts following the CONTEXT → TASK → FORMAT structure,
-              built for consistency and reuse across projects.</p>
-            <div class="project-tags">
-              <span>Claude</span><span>Prompt Design</span><span>Documentation</span>
+            <div class="form-group">
+              <label for="newProjectDescription">Description</label>
+              <input type="text" id="newProjectDescription" placeholder="What it does">
             </div>
-            <a href="https://github.com/sankara226/PROMPT-LIBRARY" target="_blank" rel="noopener noreferrer" class="project-link">
-              View Repo <span class="arrow" aria-hidden="true">→</span>
-            </a>
-          </article>
+            <div class="form-group">
+              <label for="newProjectRepoUrl">Repo URL</label>
+              <input type="url" id="newProjectRepoUrl" placeholder="https://github.com/...">
+            </div>
+            <div class="form-group">
+              <label for="newProjectTech">Technologies (comma separated)</label>
+              <input type="text" id="newProjectTech" placeholder="Python, FastAPI">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Project</button>
+            <span class="admin-form-status" id="addProjectStatus"></span>
+          </form>
+        </div>
 
-          <article class="project-card tilt-card">
-            <div class="project-card-top">
-              <span class="project-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              </span>
-              <h3>Data Pipeline Automation</h3>
-            </div>
-            <p>Built a multi-file Python project that automates data cleaning, analysis, and reporting
-              end-to-end — from raw input to a finished report.</p>
-            <div class="project-tags">
-              <span>Python</span><span>Automation</span><span>Data Analysis</span>
-            </div>
-            <a href="https://github.com/sankara226/DATA-PIPELINE-AUTOMATION" target="_blank" rel="noopener noreferrer" class="project-link">
-              View Repo <span class="arrow" aria-hidden="true">→</span>
-            </a>
-          </article>
-
-          <article class="project-card tilt-card">
-            <div class="project-card-top">
-              <span class="project-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg>
-              </span>
-              <h3>Marketing Analysis</h3>
-            </div>
-            <p>Analyzed campaign and customer data to surface actionable marketing insights, turning raw
-              metrics into clear, decision-ready reporting.</p>
-            <div class="project-tags">
-              <span>Data Analysis</span><span>SQLite</span><span>Marketing</span>
-            </div>
-            <a href="https://github.com/sankara226/MARKETING-ANALYSIS" target="_blank" rel="noopener noreferrer" class="project-link">
-              View Repo <span class="arrow" aria-hidden="true">→</span>
-            </a>
-          </article>
-
+        <div class="project-grid" id="projectGrid">
+          <!-- Populated live by scripts/main.js -->
         </div>
       </div>
     </section>
@@ -276,9 +245,12 @@
               <textarea id="messageInput" name="message" rows="5" placeholder="Say hello..." required></textarea>
               <span class="form-error" id="messageError"></span>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+            <button type="submit" class="btn btn-primary btn-block" id="contactSubmitBtn">Send Message</button>
             <output class="form-success" id="formSuccess" aria-live="polite">
               Thanks for reaching out! I'll get back to you soon.
+            </output>
+            <output class="form-network-error" id="formNetworkError" aria-live="polite">
+              Couldn't reach the server just now — please try again in a moment, or email me directly below.
             </output>
           </form>
 

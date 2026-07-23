@@ -37,6 +37,13 @@
   box-sizing: border-box;
 }
 
+/* Guarantee the hidden attribute always wins, even over elements whose own
+   class sets display:flex/grid (equal specificity would otherwise let the
+   later-declared class rule silently override the native hidden behavior) */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -597,6 +604,143 @@ img {
 }
 
 /* Projects */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.section-heading-row .section-title {
+  margin-bottom: 0;
+}
+
+.admin-toggle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.admin-toggle:hover,
+.admin-toggle.is-active {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.data-source-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 12px 0 24px;
+}
+
+.admin-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-key-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-key-row input {
+  flex: 1;
+  min-width: 180px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.admin-key-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-key-status.is-error { color: var(--danger); }
+.admin-key-status.is-ok { color: var(--success); }
+
+.admin-project-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  align-items: end;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.admin-project-form .form-group {
+  margin-bottom: 0;
+}
+
+.admin-project-form button {
+  height: fit-content;
+}
+
+.admin-form-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  grid-column: 1 / -1;
+}
+
+.admin-form-status.is-error { color: var(--danger); }
+.admin-form-status.is-ok { color: var(--success); }
+
+.project-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.project-actions button {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.project-actions button:hover {
+  border-color: var(--accent-2);
+  color: var(--text);
+}
+
+.project-actions .delete-btn.is-armed {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -807,6 +951,22 @@ img {
 }
 
 .form-success.visible {
+  display: block;
+}
+
+.form-network-error {
+  display: none;
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-network-error.visible {
   display: block;
 }
 
